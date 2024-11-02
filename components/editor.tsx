@@ -2,8 +2,8 @@
 
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import Layers from "./layers/layers";
-import UploadImage from "./upload/upload-image";
 import ActiveImage from "./upload/active-image";
+import UploadForm from "./upload/upload-form";
 
 export default function Editor() {
   return (
@@ -13,7 +13,7 @@ export default function Editor() {
           <ModeToggle />
         </div>
       </div>
-      <UploadImage />
+      <UploadForm />
       <ActiveImage />
       <Layers />
     </div>
