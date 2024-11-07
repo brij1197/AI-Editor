@@ -53,7 +53,7 @@ export default function Layers() {
 
   return (
     <Card
-      className="basis-[320px] shrink-0 scrollbar-thin scrollbar-track-secondary
+      className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary
       overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full 
       scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl"
     >
@@ -130,7 +130,7 @@ export default function Layers() {
           </div>
         ))}
       </CardContent>
-      <div className="sticky bottom-0 bg-card flexgap-2 shrink-0">
+      <div className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4">
         <Button
           onClick={() => {
             addLayer({
@@ -150,7 +150,8 @@ export default function Layers() {
           <Layers2 className="text-secondary-foreground" size={18} />
         </Button>
         <Button
-          className="w-full flex gap-2"
+          variant={'outline'}
+          className="w-full gap-2 items-center"
           onClick={() => {
             if (layerComparisonMode) {
               setLayerComparisonMode(!layerComparisonMode);
