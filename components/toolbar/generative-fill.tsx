@@ -5,10 +5,10 @@ import { useLayerStore } from "@/lib/layer-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Crop } from "lucide-react";
-import { bgRemoval } from "@/server/bg-remove";
 import { useMemo, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { genFill } from "@/server/gen-fill";
 
 export default function GenerativeFill() {
   const setGenerating = useImageStore((state) => state.setGenerating);
@@ -16,8 +16,40 @@ export default function GenerativeFill() {
   const addLayer = useLayerStore((state) => state.addLayer);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
   const generating = useImageStore((state) => state.generating);
-  const PREVIEW_SIZE = 250;
+  const PREVIEW_SIZE = 300;
   const EXPANSION_THRESHOLD = 250;
+
+  const ExpansionIndicator = ({
+    value,
+    axis,
+  }: {
+    value: number;
+    axis: "x" | "y";
+  }) => {
+    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD;
+    const position =
+      axis === "x"
+        ? {
+            top: "50%",
+            [value > 0 ? "right" : "left"]: 0,
+            transform: "translateY(-50%)",
+          }
+        : {
+            left: "50%",
+            [value > 0 ? "bottom" : "top"]: 0,
+            transform: "translateX(-50%)",
+          };
+    return (
+      { isVisible } && (
+        <div
+          className="absolute bg-secondary text-primary px-2 py-1 rounded-md text-xs font-bold"
+          style={position}
+        >
+          {Math.abs(value)}px
+        </div>
+      )
+    );
+  };
 
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -133,6 +165,8 @@ export default function GenerativeFill() {
         >
           <div style={previewStyle}>
             <div className="animate-pulse" style={previewOverlayStyle}></div>
+            <ExpansionIndicator value={width} axis="x" />
+            <ExpansionIndicator value={height} axis="y" />
           </div>
         </div>
 
@@ -141,19 +175,21 @@ export default function GenerativeFill() {
           onClick={async () => {
             const newLayerId = crypto.randomUUID();
             setGenerating(true);
-            const res = await bgRemoval({
-              format: activeLayer.format!,
+            const res = await genFill({
               activeImage: activeLayer.url!,
+              aspect: '1:1',
+              height: (height+activeLayer.height!),
+              width: (width+activeLayer.width!)
             });
             if (res?.data?.success) {
               console.log("success");
               addLayer({
                 id: newLayerId,
                 url: res.data.success,
-                format: "png",
-                height: activeLayer.height,
-                width: activeLayer.width,
-                name: "genRemoved" + activeLayer.name,
+                format: activeLayer.format,
+                height: activeLayer.height!+height,
+                width: activeLayer.width! +width,
+                name: "genFill" + activeLayer.name,
                 publicId: activeLayer.publicId,
                 resourceType: "image",
               });
