@@ -7,6 +7,8 @@ import UploadForm from "./upload/upload-form";
 import { useLayerStore } from "@/lib/layer-store";
 import ImageTools from "./toolbar/image-toolbar";
 import Loading from "./loading-screen";
+import VideoTools from "./toolbar/video-toolbar";
+import ExportAsset from "./toolbar/export";
 
 export default function Editor() {
   const activeLayer = useLayerStore((state) => state.activeLayer);
@@ -18,6 +20,10 @@ export default function Editor() {
         </div>
         <div className="flex flex-col gap-4">
           {activeLayer.resourceType === "image" ? <ImageTools /> : null}
+          {activeLayer.resourceType === "video" ? <VideoTools /> : null}
+          {activeLayer.resourceType && (
+            <ExportAsset resource={activeLayer.resourceType} />
+          )}
         </div>
       </div>
       <Loading />
