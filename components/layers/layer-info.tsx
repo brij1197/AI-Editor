@@ -24,10 +24,10 @@ export default function LayerInfo({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant={"outline"}>
-          <Ellipsis size={14} />
+          <Ellipsis size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="text-xs">
         <h3 className="text-lg font-medium text-center mb-2">
           Layer {layer.id}
         </h3>
@@ -46,12 +46,13 @@ export default function LayerInfo({
           </p>
         </div>
         <Button
-        className="flex items-center gap-2"
           onClick={(e) => {
-            e.stopPropagation();
-            setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id);
+            e.stopPropagation()
+            setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id)
             removeLayer(layer.id)
           }}
+          variant={"destructive"}
+          className="flex items-center gap-2 w-full"
         >
           <span>Delete Layer</span>
           <Trash size={14} />

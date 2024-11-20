@@ -26,7 +26,7 @@ export default function GenerativeFill() {
     value: number;
     axis: "x" | "y";
   }) => {
-    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD;
+    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD ;
     const position =
       axis === "x"
         ? {
