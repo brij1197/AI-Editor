@@ -1,5 +1,5 @@
 import { StoreApi } from "zustand";
-import React, { useContext } from "react";
+import React from "react";
 
 export const createZustandContext = <TInitial, TStore extends StoreApi<any>>(
   getStore: (inital: TInitial) => TStore

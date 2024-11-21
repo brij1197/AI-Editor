@@ -32,7 +32,7 @@ export default function UploadVideo() {
         const res = await uploadVideo({ video: formData });
         if (res?.data?.success) {
           const videoUrl = res.data.success.url;
-          const thumbnail = videoUrl.replace(/\.[^/.]+$/, ".jpg")
+          const thumbnail = videoUrl.replace(/\.[^/.]+$/, ".jpg");
           updateLayer({
             id: activeLayer.id,
             url: res.data.success.url,
@@ -41,7 +41,7 @@ export default function UploadVideo() {
             name: res.data.success.original_filename,
             publicId: res.data.success.public_id,
             format: res.data.success.format,
-            poster:thumbnail,
+            poster: thumbnail,
             resourceType: res.data.success.resource_type,
           });
           setActiveLayer(activeLayer.id);
@@ -50,6 +50,9 @@ export default function UploadVideo() {
         if (res?.data?.error) {
           setGenerating(false);
         }
+      }
+      if (fileRejections.length) {
+        console.log("rejected");
       }
     },
   });

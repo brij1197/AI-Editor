@@ -1,7 +1,7 @@
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import React from "react";
-import { StoreApi, useStore } from "zustand";
+import { useStore } from "zustand";
 import { createZustandContext } from "./zustand-context";
 
 export type Layer = {

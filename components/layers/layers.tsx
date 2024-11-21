@@ -36,8 +36,8 @@ export default function Layers() {
   );
   const setComparedLayers = useLayerStore((state) => state.setComparedLayers);
 
-  const MCard = useMemo(() => motion(Card), []);
-  const MButton = useMemo(() => motion(Button), []);
+  const MCard = useMemo(() => motion.create(Card), []);
+  const MButton = useMemo(() => motion.create(Button), []);
 
   const getLayerName = useMemo(
     () => (id: string) => {
