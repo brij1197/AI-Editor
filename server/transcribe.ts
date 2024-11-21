@@ -42,9 +42,7 @@ function generateSubtitledVideoUrl(publicId: string): string {
           public_id: `${publicId}.transcript`,
         },
       },
-      {
-        flags: "layer_apply",
-      },
+      { flags: "layer_apply" },
     ],
   });
 }
@@ -52,13 +50,14 @@ function generateSubtitledVideoUrl(publicId: string): string {
 export const initiateTranscription = actionClient
   .schema(transcriptionData)
   .action(async ({ parsedInput: { publicId } }) => {
+    console.log(`Transcription initiated for publicId: ${publicId}`);
     try {
       await cloudinary.api.update(publicId, {
         resource_type: "video",
         raw_convert: "google_speech",
       });
       const maxAttempts = 20;
-      const delay = 1000;
+      const delay = 2000;
       let status = "pending";
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
         status = await checkTranscriptionStatus(publicId);
@@ -74,6 +73,10 @@ export const initiateTranscription = actionClient
       }
       return { error: "Transcription timed out" };
     } catch (error) {
-      return { error: "Error in Transcription Process" };
+      return {
+        error:
+          "Error in transcription process: " +
+          (error instanceof Error ? error.message : String(error)),
+      };
     }
   });
