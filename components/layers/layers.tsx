@@ -16,6 +16,7 @@ import LayerImage from "./layer-image";
 import LayerInfo from "./layer-info";
 import { useMemo } from "react";
 import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Layers() {
   const layers = useLayerStore((state) => state.layers);
@@ -35,6 +36,9 @@ export default function Layers() {
   );
   const setComparedLayers = useLayerStore((state) => state.setComparedLayers);
 
+  const MCard = useMemo(() => motion(Card), []);
+  const MButton = useMemo(() => motion(Button), []);
+
   const getLayerName = useMemo(
     () => (id: string) => {
       const layer = layers.find((l) => l.id === id);
@@ -52,12 +56,13 @@ export default function Layers() {
   );
 
   return (
-    <Card
-      className="basis-[360px] shrink-0 scrollbar-thin scrollbar-track-secondary
-      overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full 
-      scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl"
+    <MCard
+      layout
+      className="basis-[320px] shrink-0 scrollbar-thin scrollbar-track-secondary overflow-y-scroll 
+      scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden 
+      relative flex flex-col shadow-2xl"
     >
-      <CardHeader className="sticky top-0 z-50 px-4 py-6 min-h-24 bg-card shadow-sm">
+      <CardHeader className="sticky top-0 z-50 px-4 py-6 min-h-28 bg-card shadow-sm">
         {layerComparisonMode ? (
           <div>
             <CardTitle className="text-sm pb-2">Comparing...</CardTitle>
@@ -84,54 +89,65 @@ export default function Layers() {
         ) : (
           <div className="flex flex-col gap-1">
             <CardTitle className="text-sm">
-              {activeLayer.name||'Layers'}
+              {activeLayer.name || "Layers"}
             </CardTitle>
-            {activeLayer.width && activeLayer.height?(
+            {activeLayer.width && activeLayer.height ? (
               <CardDescription className="text-xs">
-              {activeLayer.width}X{activeLayer.height}
+                {activeLayer.width}X{activeLayer.height}
               </CardDescription>
-            ):null}
+            ) : null}
           </div>
         )}
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col gap-2">
-        {visibleLayers.map((layer, index) => (
-          <div
-            className={cn(
-              "cursor-pointer ease-in-out hover:bg-secondary border-transparent",
-              {
-                "animate-pulse": generating,
-                "border-primary": layerComparisonMode
-                  ? comparedLayers.includes(layer.id)
-                  : activeLayer.id === layer.id,
-              }
-            )}
-            key={layer.id}
-            onClick={() => {
-              if (generating) return;
-              if (layerComparisonMode) {
-                toggleComparedLayer(layer.id);
-              } else {
-                setActiveLayer(layer.id);
-              }
-            }}
-          >
-            <div className="relative p-4 flex items-center">
-              <div className="flex gap-2 items-center h-8 w-full justify-between">
-                {!layer.url ? (
-                  <p className="text-xs font-medium justify-self-end">
-                    New Layer
-                  </p>
-                ) : null}
-                <LayerImage layer={layer} />
-                <LayerInfo layer={layer} layerIndex={index} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </CardContent>
-      <div className="sticky bottom-0 bg-card flex gap-2 shrink-0 p-4">
-        <Button
+      <motion.div className="flex-1 flex flex-col">
+        <AnimatePresence>
+          {visibleLayers.map((layer, index) => {
+            return (
+              <motion.div
+                animate={{ scale: 1, opacity: 1 }}
+                initial={{ scale: 0, opacity: 0 }}
+                exit={{ scale: 0, opacity: 0 }}
+                layout
+                className={cn(
+                  "cursor-pointer ease-in-out hover:bg-secondary border border-transparent",
+                  {
+                    "animate-pulse": generating,
+                    "border-primary": layerComparisonMode
+                      ? comparedLayers.includes(layer.id)
+                      : activeLayer.id === layer.id,
+                  }
+                )}
+                key={layer.id}
+                onClick={() => {
+                  if (generating) return;
+                  if (layerComparisonMode) {
+                    toggleComparedLayer(layer.id);
+                  } else {
+                    setActiveLayer(layer.id);
+                  }
+                }}
+              >
+                <div className="relative p-4 flex items-center">
+                  <div className="flex gap-2 items-center h-8 w-full justify-between">
+                    {!layer.url ? (
+                      <p className="text-xs font-medium justify-self-end">
+                        New Layer
+                      </p>
+                    ) : null}
+                    <LayerImage layer={layer} />
+                    {layers.length !== 1 && (
+                      <LayerInfo layer={layer} layerIndex={index} />
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </motion.div>
+      <CardContent className="sticky bottom-0 bg-card flex gap-2 shrink-0">
+        <MButton
+          layout
           onClick={() => {
             addLayer({
               id: crypto.randomUUID(),
@@ -146,12 +162,13 @@ export default function Layers() {
           className="w-full flex gap-2"
           variant={"outline"}
         >
-          <span>Create Layer</span>
+          <span className="text-xs">Create Layer</span>
           <Layers2 className="text-secondary-foreground" size={18} />
-        </Button>
-        <Button
-          variant={'outline'}
-          className="w-full gap-2 items-center"
+        </MButton>
+        <MButton
+          layout
+          variant={"outline"}
+          className="w-full gap-2 flex items-center"
           onClick={() => {
             if (layerComparisonMode) {
               setLayerComparisonMode(!layerComparisonMode);
@@ -161,14 +178,14 @@ export default function Layers() {
           }}
           disabled={!activeLayer.url || activeLayer.resourceType === "video"}
         >
-          <span>
-            {layerComparisonMode ? "Stop Comparing" : "Compare Layers"}
-          </span>
+          <motion.span className={cn("text-xs font-bold")}>
+            {layerComparisonMode ? "Stop Comparing" : "Compare"}
+          </motion.span>
           {!layerComparisonMode && (
             <Images className="text-secondary-foreground" size={18} />
           )}
-        </Button>
-      </div>
-    </Card>
+        </MButton>
+      </CardContent>
+    </MCard>
   );
 }

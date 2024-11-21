@@ -7,7 +7,7 @@ import {
 } from "react-compare-slider";
 
 export default function ImageComparison({ layers }: { layers: Layer[] }) {
-  if (layers.length == 0) {
+  if (layers.length === 0) {
     return <div>No Layers selected for comparison</div>;
   }
   if (layers.length === 1) {
@@ -38,6 +38,6 @@ export default function ImageComparison({ layers }: { layers: Layer[] }) {
           alt={layers[1].name || "Image two"}
         />
       }
-    ></ReactCompareSlider>
+    />
   );
 }

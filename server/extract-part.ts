@@ -40,7 +40,6 @@ export const extractPart = actionClient
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       isProcessed = await checkImageProcessing(bgUrl);
-      console.log(bgUrl);
       if (isProcessed) {
         break;
       }
@@ -49,5 +48,6 @@ export const extractPart = actionClient
     if (!isProcessed) {
       throw new Error("image processing timed out");
     }
+    console.log(bgUrl);
     return { success: bgUrl };
   });

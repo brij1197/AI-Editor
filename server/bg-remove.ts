@@ -39,5 +39,6 @@ export const bgRemoval = actionClient
     if (!isProcessed) {
       throw new Error("image processing timed out");
     }
+    console.log(bgUrl);
     return { success: bgUrl };
   });

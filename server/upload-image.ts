@@ -15,12 +15,12 @@ const formData = z.object({
 });
 
 type UploadResult =
-| { success: UploadApiResponse; error?: never }
-| { error: string; success?: never };
+  | { success: UploadApiResponse; error?: never }
+  | { error: string; success?: never };
 
 export const uploadImage = actionClient
   .schema(formData)
-  .action(async ({ parsedInput: { image } }) : Promise<UploadResult> => {
+  .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
     const formImage = image.get("image");
 
     if (!formImage) return { error: "No image was provided" };
@@ -41,10 +41,10 @@ export const uploadImage = actionClient
           },
           (error, result) => {
             if (error || !result) {
-              console.error("Upload failed:", error)
+              console.error("Upload failed:", error);
               reject({ error: "Upload Failed" });
             } else {
-              console.error("Upload Successful:",result)
+              console.error("Upload Successful:", result);
               resolve({ success: result });
             }
           }
@@ -52,7 +52,7 @@ export const uploadImage = actionClient
         uploadStream.end(buffer);
       });
     } catch (error) {
-      console.error(error)
+      console.error(error);
       return { error: "Error processing file" };
     }
   });
