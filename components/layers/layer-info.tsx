@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Ellipsis, Trash } from "lucide-react";
 import { Layer, useLayerStore } from "@/lib/layer-store";
@@ -31,7 +27,7 @@ export default function LayerInfo({
         <h3 className="text-lg font-medium text-center mb-2">
           Layer {layer.id}
         </h3>
-        <div>
+        <div className="py-4 space-y-0.5">
           <p>
             <span className="font-bold">Filename: </span>
             {layer.name}
@@ -47,11 +43,11 @@ export default function LayerInfo({
         </div>
         <Button
           onClick={(e) => {
-            e.stopPropagation()
-            setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id)
-            removeLayer(layer.id)
+            e.stopPropagation();
+            setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id);
+            removeLayer(layer.id);
           }}
-          variant={"destructive"}
+          variant={"outline"}
           className="flex items-center gap-2 w-full"
         >
           <span>Delete Layer</span>

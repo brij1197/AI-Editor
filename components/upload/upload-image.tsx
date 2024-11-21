@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useImageStore } from "@/lib/image-store";
 import { useLayerStore } from "@/lib/layer-store";
 import Lottie from "lottie-react";
-import imageAnimation from '@/public/animations/image-upload.json'
+import imageAnimation from "@/public/animations/image-upload.json";
 
 export default function UploadImage() {
   const setGenerating = useImageStore((state) => state.setGenerating);
@@ -60,6 +60,9 @@ export default function UploadImage() {
         if (res?.data?.error) {
           setGenerating(false);
         }
+      }
+      if (fileRejections.length) {
+        console.log("rejected");
       }
     },
   });

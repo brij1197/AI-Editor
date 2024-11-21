@@ -11,17 +11,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const genFillSchema = z.object({
+const genCropSchema = z.object({
   activeVideo: z.string(),
   aspect: z.string(),
   height: z.string(),
 });
 
 export const genCrop = actionClient
-  .schema(genFillSchema)
+  .schema(genCropSchema)
   .action(async ({ parsedInput: { activeVideo, aspect, height } }) => {
     const parts = activeVideo.split("/upload/");
-    const fillUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
+    const cropUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`;
 
     let isProcessed = false;
     const maxAttempts = 20;
@@ -29,7 +29,7 @@ export const genCrop = actionClient
     const delay = 1000;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      isProcessed = await checkImageProcessing(fillUrl);
+      isProcessed = await checkImageProcessing(cropUrl);
       if (isProcessed) {
         break;
       }
@@ -38,5 +38,6 @@ export const genCrop = actionClient
     if (!isProcessed) {
       return { error: "Video Processing Failed" };
     }
-    return { success: fillUrl };
+    console.log(cropUrl);
+    return { success: cropUrl };
   });

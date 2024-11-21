@@ -9,15 +9,15 @@ import { useMemo, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { genFill } from "@/server/gen-fill";
-
+import { AnimatePresence, motion } from "framer-motion";
+const PREVIEW_SIZE = 250;
+const EXPANSION_THRESHOLD = 250;
 export default function GenerativeFill() {
   const setGenerating = useImageStore((state) => state.setGenerating);
   const activeLayer = useLayerStore((state) => state.activeLayer);
   const addLayer = useLayerStore((state) => state.addLayer);
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer);
   const generating = useImageStore((state) => state.generating);
-  const PREVIEW_SIZE = 300;
-  const EXPANSION_THRESHOLD = 250;
 
   const ExpansionIndicator = ({
     value,
@@ -26,7 +26,7 @@ export default function GenerativeFill() {
     value: number;
     axis: "x" | "y";
   }) => {
-    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD ;
+    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD;
     const position =
       axis === "x"
         ? {
@@ -40,19 +40,54 @@ export default function GenerativeFill() {
             transform: "translateX(-50%)",
           };
     return (
-      { isVisible } && (
-        <div
-          className="absolute bg-secondary text-primary px-2 py-1 rounded-md text-xs font-bold"
-          style={position}
-        >
-          {Math.abs(value)}px
-        </div>
-      )
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="absolute bg-primary text-white px-2 py-1 rounded-md text-xs font-bold"
+            style={position}
+          >
+            {Math.abs(value)}px
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   };
 
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+
+  const handleGenFill = async () => {
+    const newLayerId = crypto.randomUUID();
+    setGenerating(true);
+    const res = await genFill({
+      activeImage: activeLayer.url!,
+      aspect: "1:1",
+      height: height + activeLayer.height!,
+      width: width + activeLayer.width!,
+    });
+    if (res?.data?.success) {
+      console.log(res.data.success);
+      addLayer({
+        id: newLayerId,
+        url: res.data.success,
+        format: activeLayer.format,
+        height: activeLayer.height! + height,
+        width: activeLayer.width! + width,
+        name: "genFill" + activeLayer.name,
+        publicId: activeLayer.publicId,
+        resourceType: "image",
+      });
+      setActiveLayer(newLayerId);
+      setGenerating(false);
+    }
+    if (res?.data?.error) {
+      console.log(res.data.error);
+      setGenerating(false);
+    }
+  };
 
   const previewStyle = useMemo(() => {
     if (!activeLayer.width || !activeLayer.height) return {};
@@ -99,7 +134,7 @@ export default function GenerativeFill() {
   return (
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
-        <Button variant="outline" className="p-8">
+        <Button variant="outline" className="py-8">
           <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
             Generative Fill <Crop size={20} />
           </span>
@@ -107,24 +142,29 @@ export default function GenerativeFill() {
       </PopoverTrigger>
       <PopoverContent className="w-full">
         <div className="flex flex-col h-full">
-          <div className="pb-4">
-            <h3>Generative Fill</h3>
-            <p className="text-sm text-muted-foreground">
-              Remove the background of an image
-            </p>
+          <div className="space-y-2">
+            <h4 className="font-medium text-center py-2 leading-none">
+              Generative Fill
+            </h4>
           </div>
           {activeLayer.width && activeLayer.height ? (
             <div className="flex justify-evenly">
               <div className="flex flex-col items-center">
                 <span className="text-xs">Current Size:</span>
                 <p className="text-sm text-primary font-bold">
-                  {activeLayer.width}x{activeLayer.height}
+                  {activeLayer.width}X{activeLayer.height}
                 </p>
               </div>
               <div className="flex flex-col items-center">
-                <span className="text-xs">New Size</span>
+                <span className="text-xs">New Size:</span>
                 <p className="text-sm text-primary font-bold">
-                  {activeLayer.width + width}x{activeLayer.height + height}
+                  <Popover>
+                    <PopoverTrigger>{activeLayer.width + width}</PopoverTrigger>
+                    <PopoverContent>
+                      <Input name="width" type="number" />
+                    </PopoverContent>
+                  </Popover>
+                  X{activeLayer.height + height}
                 </p>
               </div>
             </div>
@@ -143,13 +183,14 @@ export default function GenerativeFill() {
             />
           </div>
           <div className="text-center">
-            <Label htmlFor="width">Modify Height</Label>
+            <Label htmlFor="height">Modify Height</Label>
             <Input
               name="height"
               type="range"
               max={activeLayer.height}
               min={-activeLayer.height! + 100}
               value={height}
+              step={2}
               onChange={(e) => setHeight(parseInt(e.target.value))}
               className="h-8"
             />
@@ -161,45 +202,23 @@ export default function GenerativeFill() {
           style={{
             width: `${PREVIEW_SIZE}px`,
             height: `${PREVIEW_SIZE}px`,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+            margin: "auto",
           }}
         >
           <div style={previewStyle}>
-            <div className="animate-pulse" style={previewOverlayStyle}></div>
+            <div className="animate-pulsate" style={previewOverlayStyle}></div>
             <ExpansionIndicator value={width} axis="x" />
             <ExpansionIndicator value={height} axis="y" />
           </div>
         </div>
 
         <Button
-          disabled={!activeLayer?.url || generating}
-          onClick={async () => {
-            const newLayerId = crypto.randomUUID();
-            setGenerating(true);
-            const res = await genFill({
-              activeImage: activeLayer.url!,
-              aspect: '1:1',
-              height: (height+activeLayer.height!),
-              width: (width+activeLayer.width!)
-            });
-            if (res?.data?.success) {
-              console.log("success");
-              addLayer({
-                id: newLayerId,
-                url: res.data.success,
-                format: activeLayer.format,
-                height: activeLayer.height!+height,
-                width: activeLayer.width! +width,
-                name: "genFill" + activeLayer.name,
-                publicId: activeLayer.publicId,
-                resourceType: "image",
-              });
-              setActiveLayer(newLayerId);
-              setGenerating(false);
-            }
-            if (res?.serverError) {
-              setGenerating(false);
-            }
-          }}
+          disabled={!activeLayer?.url || generating || (!width && !height)}
+          onClick={handleGenFill}
           className="w-full mt-4"
         >
           {generating ? "Generating..." : "Generative Fill"}

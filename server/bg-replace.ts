@@ -21,7 +21,11 @@ export const bgReplace = actionClient
   .action(async ({ parsedInput: { activeImage, prompt } }) => {
     const parts = activeImage.split("/upload/");
     const bgReplaceUrl = prompt
-      ? `${parts[0]}/upload/e_gen_background_replace:prompt_${prompt}/${parts[1]}`
+      ? `${
+          parts[0]
+        }/upload/e_gen_background_replace:prompt_${encodeURIComponent(
+          prompt
+        )}/${parts[1]}`
       : `${parts[0]}/upload/e_gen_background_replace/${parts[1]}`;
 
     let isProcessed = false;
@@ -38,5 +42,6 @@ export const bgReplace = actionClient
     if (!isProcessed) {
       throw new Error("image processing timed out");
     }
+    console.log(bgReplaceUrl);
     return { success: bgReplaceUrl };
   });

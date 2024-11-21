@@ -36,5 +36,6 @@ export const genRemove = actionClient
     if (!isProcessed) {
       throw new Error("image processing timed out");
     }
+    console.log(removeUrl);
     return { success: removeUrl };
   });
