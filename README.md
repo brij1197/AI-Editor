@@ -30,7 +30,7 @@ Easily deploy and run using Docker containers.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/ai-editor.git
+   git clone https://github.com/brij1197/AI-Editor.git
    cd ai-editor
    ```
 
