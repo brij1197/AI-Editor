@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Editor
 
-## Getting Started
+A proof of concept for a Image and Video Editor using AI tools built with Next.js for the frontend and Cloudinary for backend image and asset management.
 
-First, run the development server:
+## Features
+Leverage AI tools for intuitive text and image editing.
+Get instant feedback on your edits.
+Store and manage images and media efficiently in the cloud.
+Optimized for desktop, tablet, and mobile views.
+Easily deploy and run using Docker containers.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies Used
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Frontend
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Next.js](https://nextjs.org/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Backend
 
-## Learn More
+- [Cloudinary](https://cloudinary.com/)
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [npm](https://www.npmjs.com/) 
+- [Docker](https://www.docker.com/)
+- Access to **Cloudinary** credentials
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. **Clone the repository:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   git clone https://github.com/yourusername/ai-editor.git
+   cd ai-editor
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install the dependencies:**
+
+    ```sh
+    npm install
+    ```
+
+### Configuration
+
+1. **Create a `.env.local` file in the backend directory with the following content:**
+
+    ```env
+      CLOUDINARY_NAME=your-cloud-name
+      CLOUDINARY_KEY=your-api-key
+      CLOUDINARY_SECRET=your-api-secret
+      CLOUDINARY_PRESET=your-ai-preset
+    ```
+
+### Running the Application with Docker
+
+1. **Build the Docker image:**
+   ```bash
+   docker-compose build
+   ```
+
+2. **Run the container:
+   ```bash
+   docker-compose up
+   ```
+
+3. **Visit the application in your browser at:**
+   ```
+   http://localhost:3000
+   ```
+
+### Running the Application locally:
+
+1. **Start the development server:**
+
+    ```sh
+    cd ai-editor
+    npm run dev
+    ```
+
+2. **Open your browser and navigate to:**
+
+    ```
+    http://localhost:3000
+    ```
