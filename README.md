@@ -3,11 +3,12 @@
 A proof of concept for a Image and Video Editor using AI tools built with Next.js for the frontend and Cloudinary for backend image and asset management.
 
 ## Features
-Leverage AI tools for intuitive text and image editing.
-Get instant feedback on your edits.
-Store and manage images and media efficiently in the cloud.
-Optimized for desktop, tablet, and mobile views.
-Easily deploy and run using Docker containers.
+
+- Leverage AI tools for intuitive text and image editing.
+- Get instant feedback on your edits.
+- Store and manage images and media efficiently in the cloud.
+- Optimized for desktop, tablet, and mobile views.
+- Easily deploy and run using Docker containers.
 
 ## Technologies Used
 
