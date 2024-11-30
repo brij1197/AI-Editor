@@ -59,7 +59,7 @@ A proof of concept for a Image and Video Editor using AI tools built with Next.j
    docker-compose build
    ```
 
-2. **Run the container:
+2. **Run the container:**
    ```bash
    docker-compose up
    ```
